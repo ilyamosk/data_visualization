@@ -1,7 +1,6 @@
 ---
-title: 'GGPLOT: BAR CHARTS'
-author: "By Ilya Moskalenko & Sita Manasa Susarla"
-date: '2023'
+title: "Lab Module 3: Bar Charts"
+subtitle: "PHW251B: Data Visualization for Public Health"
 output:
   pdf_document:
     toc: yes
@@ -10,69 +9,48 @@ output:
     df_print: paged
 ---
 
+```{r setup, echo = F, warning=F, message=F}
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts = list(width.cutoff = 85))
 
-\newpage
+# It is good practice to always load your libraries first!
+library(tidyverse)
+library(ggthemes)
+library(magrittr)
 
-# INTRODUCTION
+```
 
-***
+## Introduction
 
 Welcome to Week 3!
 
-In this module, we will explore how to create basic and advanced barcharts and modify them to be publication-worthy using ggplot.
+In this module, we will explore how to utilize `R` and the `ggplot2` package to create publication-ready bar charts. Bar charts are useful in visualizing summary of data by categories.
 
 After this module, students should be able to:
 
-- Create basic graphs using ggplot
-
-- Use advanced ggplot aesthetics to customize graphs
-
+- Create basic graphs using `ggplot`
+- Use advanced `ggplot` aesthetics to customize graphs
 - Apply concepts of effective graphical design to produce professional graphs
 
 Helpful Resources:
 
 - ggplot Cheatsheet [link](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
-
 - R Brewer Palettes [link](https://r-graph-gallery.com/38-rcolorbrewers-palettes.html)
-
 - HEX Color Palette Generator [link](https://coolors.co/)
-
 - ggthemes List [link](https://ggplot2.tidyverse.org/reference/ggtheme.html)
 
 \newpage
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+## The Data
 
-```{r load libraries, warning=FALSE, message= FALSE}
-# It is good practice to always load your libraries first!
-library(tidyverse)
-library(ggthemes)
-library(magrittr)
-```
-
-\newpage
-
-# PART 0
-
-***
-
-## 0.1: DATA SET BACKGROUND INFO
-
-For this module, we will use data from a case-control study of esophageal cancer in Ille-et-Vilaine, France using a built-in dataset in R.
+For this module, we will use data from a case-control study of esophageal cancer in Ille-et-Vilaine, France using a built-in dataset in `R`.
 
 There are 5 variables:
 
-agegp: Age group
-
-alcgp: Alcohol consumption in grams/day
-
-tobgp: Tobacco consumption in grams/day
-
-ncases: Number of cases
-
-ncontrols: Number of controls
+- **agegp**: Age group
+- **alcgp**: Alcohol consumption in grams/day
+- **tobgp**: Tobacco consumption in grams/day
+- **ncases**: Number of cases
+- **ncontrols**: Number of controls
 
 ```{r load data}
 # Load data
@@ -86,7 +64,7 @@ head(esoph)
 
 \newpage 
 
-## 0.2: DATA PREPROCESSING
+## Data Pre-processing
 
 Based on the data, I am curious to see which age group has the most cases of esophageal cancer. So, to find that out, we need to first clean and subset our data.
 
@@ -116,11 +94,11 @@ To get a better understanding of this trend, let's visualize this data using a b
 
 \newpage
 
-# PART 1: BAR PLOT BASIC ANATOMY
+# Part 1: Bar Chart Basic Anatomy
 
 ***
 
-## 1.1: SETTING UP INITIAL GGPLOT LAYER
+## 1.1: Setting up the initial `ggplot`s layer
 
 ```{r}
 # Initialize the 'barchart' object and specify the data frame 'agg_agegp' as the data source
@@ -137,11 +115,11 @@ barchart <- ggplot(data = agg_agegp, # Selecting the data that will be fed into 
 barchart
 ```
 
-Alright, so we have a basic barchart! What correlations do you see between the cases of esophageal cancer and age group? We will now move into various aspects of the graph you may want to modify to make it more presentable to an audience.
+Alright, so we have a basic bar chart! What correlations do you see between the cases of esophageal cancer and age group? We will now move into various aspects of the graph you may want to modify to make it more presentable to an audience.
 
 \newpage
 
-## 1.2: TITLES, CAPTIONS, AXES LABELS, FONTS
+## 1.2: Titles, captions, axes labels, fonts
 
 ```{r}
 # Add custom labels to the 'barchart' 
@@ -164,11 +142,11 @@ barchart +
 
 \newpage
 
-# PART 2: COLOR
+# Part 2: Color
 
 ***
 
-## 2.1: HOW TO ADD COLOR
+## 2.1: Adding color
 
 ```{r}
 # One color for all bars
@@ -204,7 +182,7 @@ barchart2
 
 \newpage
 
-## 2.2: COLOR USE CASES
+## 2.2: Color Use Cases
 
 ### 2.2.1: Color to depict quantity (When you want the emphasis to be on a continuous value)    
 
@@ -234,7 +212,7 @@ barchart2 +
 
 \newpage
 
-## 2.3: LEGEND
+## 2.3: Legend
 
 ```{r message = FALSE, warning = FALSE}
 # To modify the Legend:
@@ -253,7 +231,7 @@ barchart2 +
 
 \newpage
 
-## 2.4: GRIDLINES/BACKGROUND
+## 2.4: Gridlines/background
 
 ```{r}
 # Remove Vertical Lines
@@ -293,8 +271,7 @@ barchart2 +
   theme_solarized(light = FALSE)
 ```
 
-
-TRY-IT-YOURSELF: We have individually gone through the methods to customize and elevate our plots. So, to produce a final, professional barchart, can you combine all of the modifications (i.e. Captions/Labels, Color, and Legend) above into a single call?
+**TRY-IT-YOURSELF**: We have individually gone through the methods to customize and elevate our plots. So, to produce a final, professional bar chart, can you combine all of the modifications (i.e. Captions/Labels, Color, and Legend) above into a single call?
 
 ```{r, fig.width=7}
 #Type your answer here
@@ -318,17 +295,17 @@ custom_barchart
 
 \newpage
 
-# PART 3: TYPES OF BARCHARTS
+# Part 3: Types of bar charts
 
 ***
 
-Alright, so we have explored how to modify regular barcharts to make them more professional and presentable.
+Alright, so we have explored how to modify regular bar charts to make them more professional and presentable.
 
-In this part of the module, we will dive into creating more complex barcharts such as grouped and stacked barcharts.
+In this part of the module, we will dive into creating more complex bar charts such as grouped and stacked bar charts.
 
 \newpage
 
-## 3.1: STACKED BARCHART
+## 3.1: Stacked bar chart
 
 Earlier, we compared the number and percent of cases of esophageal cancer by age group and noticed that some age groups tended to have a higher percentage of cases than others. To explore this relationship more, let's look at how the number of cases are broken down by each age group's alcohol consumption.
 
@@ -341,11 +318,11 @@ stacked_bc
 
 What do you notice about the distribution of alcohol consumption across the age groups? 
 
-Currently, our stacked barchart is using the default colors which may or may not look great or fit with our theme.
+Currently, our stacked bar chart is using the default colors which may or may not look great or fit with our theme.
 
 \newpage
 
-### 3.1.1: COLOR
+### 3.1.1: Color
 
 ```{r}
 # Color Palettes
@@ -361,7 +338,7 @@ stacked_bc + scale_fill_manual(values=c("#78CDD7", "#44A1A0", "#247B7B", "#0D5C6
 
 \newpage
 
-### 3.1.2: BORDER
+### 3.1.2: Border
 
 ```{r}
 # Add Border and Color
@@ -390,7 +367,7 @@ barchart3
 
 \newpage
 
-### 3.1.3: LABELS
+### 3.1.3: Labels
 
 ```{r}
 ggplot(alc_cases, aes(x = agegp, y = total_cases, fill = alcgp, 
@@ -410,7 +387,7 @@ ggplot(alc_cases, aes(x=agegp, y=total_cases, fill = alcgp,
 
 \newpage
 
-### 3.1.4: LEGEND
+### 3.1.4: Legend
 
 ```{r message = FALSE, warning = FALSE}
 # Change the Category Labels
@@ -422,7 +399,7 @@ ggplot(alc_cases, aes(x = agegp, y = total_cases, fill = alcgp)) +
   scale_fill_discrete(labels = c("<= 39", "40-79", "80-119", ">= 120"))
 ```
 
-### 3.1.5: ORDERING BARS
+### 3.1.5: Ordering Bars
 
 ```{r}
 # Reordering the bars in ascending/descending order
@@ -434,7 +411,7 @@ ggplot(esoph,aes(x = reorder(agegp,-ncases), y = ncases, fill = alcgp)) +
 # as the age group categories are out of order
 ```
 
-### 3.1.6: REVERSE BAR STACKING
+### 3.1.6: Reverse bar stacking
 
 ```{r}
 # Reverse the stacking of the bars
@@ -442,14 +419,13 @@ ggplot(esoph,aes(x = agegp, y = ncases, fill = alcgp)) +
   geom_bar(stat ="identity", position = position_stack(reverse = TRUE)) # Reversing stacking
 ```
 
-
 \newpage
 
-## 3.2: DODGED BARCHART
+## 3.2: Dodged bar charts
 
-Sometimes a stacked barchart may not be easy to understand or interpret. Well, there is a solution to that: Dodged Barcharts!
+Sometimes a stacked barchart may not be easy to understand or interpret. Well, there is a solution to that: Dodged bar charts!
 
-Dodged barcharts are very similar to stacked barcharts, with very minor changes in code syntax. We will look at grouped barcharts with our previous example of alcohol consumption.
+Dodged bar charts are very similar to stacked bar charts, with very minor changes in code syntax. We will look at grouped bar charts with our previous example of alcohol consumption.
 
 ```{r}
 dodged_bc <- ggplot(alc_cases, aes(x = agegp, y = total_cases, fill = alcgp)) +
@@ -458,7 +434,7 @@ dodged_bc <- ggplot(alc_cases, aes(x = agegp, y = total_cases, fill = alcgp)) +
 dodged_bc
 ```
 
-### 3.2.1: COLOR (Redundant Maybe Delete? Move somewhere else?)
+### 3.2.1: Color (Redundant Maybe Delete? Move somewhere else?)
 
 ```{r}
 # Change color the same way you did for stacked barcharts 
@@ -467,8 +443,7 @@ dodged_bc
 dodged_bc + scale_fill_brewer(palette = "PiYG")
 ```
 
-
-### 3.2.2: LABELS (Redundant Maybe Delete? Move somewhere else?)
+### 3.2.2: Labels (Redundant Maybe Delete? Move somewhere else?)
 
 ```{r}
 # If you would like to include the empty bar space along with the values
@@ -495,10 +470,9 @@ ggplot(alc_cases2, aes(x = agegp, y = total_cases, fill = alcgp)) +
             vjust = 1, size = 3, color = "#ffffff") # Much better!
 ```
 
-The code for everything else for dodged barcharts is similar to what has been previously covered in this module.
+The code for everything else for dodged bar charts is similar to what has been previously covered in this module.
 
-
-TRY-IT-YOURSELF: You have already created a stacked barchart for tobacco consumption. Similarly, now that we have gone through grouped barcharts, produce a professional grouped barchart that shows the number of cases of esophageal cancer by each age group's tobacco consumption.
+**TRY-IT-YOURSELF**: You have already created a stacked bar chart for tobacco consumption. Similarly, now that we have gone through grouped bar charts, produce a professional grouped barchart that shows the number of cases of esophageal cancer by each age group's tobacco consumption.
 
 ```{r}
 #Type your answer here
@@ -507,9 +481,9 @@ TRY-IT-YOURSELF: You have already created a stacked barchart for tobacco consump
 
 \newpage
 
-## 3.3: FACETED BAR CHARTS 
+## 3.3: Faceted bar charts 
 
-### 3.3.0: DATA IMPORT
+### 3.3.0: Data Import
 
 The **esoph** data set is too small and has too few features to support quality faceting therefore we will be leveraging the **NHANES** database to demonstrate **faceted bar charts**.
 
@@ -528,9 +502,9 @@ NHANES_df <- NHANES %>%
   drop_na(Race3,Education)
 ```
 
-### 3.3.1: METHOD 1: facet_grid()
+### 3.3.1: Method 1: facet_grid()
 
-#### 3.3.1.1: FACETING BY ONE FEATURE
+#### 3.3.1.1: Faceting by one feature
 
 ```{r, message=FALSE}
 # Making it look cleaner
@@ -544,7 +518,7 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   theme(legend.position = "bottom") 
 ```
 
-### 3.3.1.2: FACETING BY TWO FEATURES
+### 3.3.1.2: Faceting by two features
 
 ```{r, fig.width=10}
 ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
@@ -557,9 +531,9 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   theme(legend.position = "bottom") 
 ```
 
-### 3.3.2: METHOD 2: facet_wrap()
+### 3.3.2: Method 2: facet_wrap()
 
-#### 3.3.2.1: FACETING WITH 2 COLUMNS
+#### 3.3.2.1: Faceting with 2 columns
 
 ```{r}
 # Create a faceted bar plot of smoking status by gender using facet_wrap with 2 columns
@@ -573,7 +547,7 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   theme(legend.position = "bottom")
 ```
 
-#### 3.3.2.2: FACETING WITH 3 COLUMNS
+#### 3.3.2.2: Faceting with 3 columns
 
 ```{r}
 # Create a faceted bar plot of smoking status by gender using facet_wrap
@@ -587,7 +561,7 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   theme(legend.position = "bottom")  
 ```
 
-## 3.4: HORIZONTAL BAR CHART
+## 3.4: Horizontal bar chart
 
 ```{r}
 # Flipping the axis of the barchart
@@ -595,11 +569,7 @@ barchart3 +
   coord_flip() # Mention this to swap the x and y axes
 ```
 
-
-
-
-
-TRY-IT-YOURSELF: Now that we have reviewed stacked barcharts, it's time for you to create and modify one! Produce a professional stacked barchart that shows the number of cases of esophageal cancer by each age group's tobacco consumption.
+**TRY-IT-YOURSELF**: Now that we have reviewed stacked barcharts, it's time for you to create and modify one! Produce a professional stacked barchart that shows the number of cases of esophageal cancer by each age group's tobacco consumption.
 
 ```{r}
 # Type your answer here
@@ -608,18 +578,11 @@ TRY-IT-YOURSELF: Now that we have reviewed stacked barcharts, it's time for you 
 
 \newpage
 
+# Summary/Recap:
 
-
-
-
-
-SUMMARY/RECAP:
-
-- We have reviewed how to customize ggplots for publications or presentation to a professional audience
-
+- We have reviewed how to customize `ggplot` figures for publications or presentation to a professional audience
 - We explored modifications to color, labels, appearance, and legends
-
-- You should be able to produce a polished barchart that is publication-worthy (run the code below for a professional barchart)
+- You should be able to produce a polished bar chart that is publication-worthy (run the code below for a professional bar chart)
 
 ```{r, echo = FALSE}
 ec_tobacco <- esoph %>% 
