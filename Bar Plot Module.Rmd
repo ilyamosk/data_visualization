@@ -2,11 +2,11 @@
 title: "Lab Module 3: Bar Charts"
 subtitle: "PHW251B: Data Visualization for Public Health"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
     df_print: paged
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, echo = F, warning=F, message=F}
@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts = list(width.cutoff = 
 library(tidyverse)
 library(ggthemes)
 library(magrittr)
+library(scales)
 
 ```
 
@@ -512,7 +513,8 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   geom_bar(position = "dodge", color = "black") +
   labs(x = "Smoking Status", y = "Count", title = "Faceted Bar Plot of Smoking Status by Gender") +
   scale_fill_manual(values = c("male" = "purple", "female" = "orange"),
-                    labels = c("Male", "Female")) + # Be mindful of assigning colors to gender
+                    labels = c("Female", "Male")
+                    ) + # Be mindful of assigning colors to gender
   facet_grid(~ Race3) + # 1 Feature: Education by Race
   theme_classic() +
   theme(legend.position = "bottom") 
@@ -525,7 +527,7 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   geom_bar(position = "dodge", color="black") +
   labs(x = "Smoking Status", y = "Count", title = "Faceted Bar Plot of Smoking Status by Gender") +
   scale_fill_manual(values = c("male" = "purple", "female" = "orange"), 
-                    labels = c("Male", "Female")) + 
+                    labels = c("Female", "Male")) + 
   facet_grid(Education ~ Race3) + # 2 Features: Education by Race
   theme_classic() +
   theme(legend.position = "bottom") 
@@ -541,7 +543,7 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   geom_bar(position = "dodge", color= "black") +
   labs(x = "Smoking Status", y = "Count", title = "Faceted Bar Plot of Smoking Status by Gender using facet_wrap") +
   scale_fill_manual(values = c("male" = "purple", "female" = "orange"),
-                    labels = c("Male", "Female")) +
+                    labels = c("Female", "Male")) +
   facet_wrap(~ Race3, ncol = 2) + # 2 columns
   theme_classic() +
   theme(legend.position = "bottom")
@@ -555,11 +557,75 @@ ggplot(NHANES_df, aes(x = Smoke100, fill = Gender)) +
   geom_bar(position = "dodge", color= "black") +
   labs(x = "Smoking Status", y = "Count", title = "Faceted Bar Plot of Smoking Status by Gender using facet_wrap") +
   scale_fill_manual(values = c("male" = "purple", "female" = "orange"),
-                    labels = c("Male", "Female")) +
+                    labels = c("Female", "Male")) +
   facet_wrap(~ Race3, ncol = 3) + # 3 columns
   theme_classic() +
   theme(legend.position = "bottom")  
 ```
+
+#### 3.3.2.3: Faceting but with subgroup proportions
+
+Let's take this chart one step further and change the y-axis to be proportions, so that the different groups are truly comparable. To do this, we rely on our `dyplr` toolkit we covered in previous lectures to create a new aggregated dataset. 
+
+This is an example of how we sometimes have to transform datasets before we visualize them. While `ggplot` has powerful innards that can take raw datasets, once we starting grouping/faceting by multiple variables and want something like proportions, it often is easier to pre-process the data (and sometimes more understandable, from a programming sense)!
+
+In this subsection, we also make a few aesthetic changes including:
+
+- Adding labels
+- Keeping just proportions answering "Yes" (since the absence of Yes is No, and vice versa, therefore could be redundant)
+- Use a different way to change labels for Gender
+- Piping a newly formed dataframe right into `ggplot`
+
+```{r}
+# Create a new aggregated dataset grouped by race3 and gender, describing smoking status
+
+NHANES_df %>%
+  #our two grouping variables
+  group_by(Gender, Race3) %>%
+  
+  #want to get the individual count in each Gender-Race group first
+  summarise(Count = n(),
+            
+            #Number of "Yes"es
+            Smoke_Yes = sum(Smoke100 == "Yes", na.rm = T),
+            
+            #Divide # of "Yes"es by the number of total respondents in a given Gender-Race group
+            Freq = Smoke_Yes/Count,
+            
+            #Here, we create labels but multiplying Freq, rounding it, and adding "%" to the end
+            #This is a character variable, whereas Freq was a numeric!
+            Freq_lbl = paste0(round(Freq*100), "%"),
+            
+            #Capitalize Gender variable
+            Gender = str_to_title(Gender))  %>%
+  
+  #Finally, we can pipe it into ggplot
+  #This method is equal to ggplot(data = df from the steps above, it saves you a bit of time and doesn't require saving another object but might not be as easy to read)
+  
+ggplot() +
+  geom_col(aes(x = Gender, y = Freq, fill = Gender), position = "dodge", color= "black") +
+  #add labels, make a vertical adjustment
+  geom_text(aes(x = Gender, y = Freq, label = Freq_lbl), vjust = -1) +
+  labs(x = "\n% Who do smoke", 
+       y = "Proportion", 
+       title = "Faceted Bar Plot of Smoking Status by Gender using facet_wrap with proportions") +
+  
+  #use percentages for the y-axis labels, have the axis run from 0 to 70%
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.7)) + 
+  
+  scale_fill_manual(values = c("Male" = "purple", "Female" = "orange")) +
+  facet_wrap(~ Race3, ncol = 3) + # 3 columns
+  theme_classic() +
+  theme(legend.position = "bottom") + 
+  
+  #don't show legend for fill since it would be redundant
+  guides(fill = "none")
+
+
+```
+
+Note that this changes our interpretation quite a bit -- it seems that females across different race/ethnicity groups all tend to proportionally smoke less than their male counterparts.
+
 
 ## 3.4: Horizontal bar chart
 
